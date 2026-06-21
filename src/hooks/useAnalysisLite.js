@@ -3,7 +3,7 @@ import { pdfToMarkdown } from '../lib/pdfExtractor.js'
 import { analizarMemoria } from '../lib/claudeClient.js'
 
 export function useAnalysisLite() {
-  const [state, setState] = useState('idle') // idle | extracting | analyzing | done | error
+  const [state, setState] = useState('idle')
   const [progress, setProgress] = useState(0)
   const [progressMsg, setProgressMsg] = useState('')
   const [resultado, setResultado] = useState(null)
@@ -14,19 +14,22 @@ export function useAnalysisLite() {
     setError(null)
     setFileName(file.name)
     setState('extracting')
-    setProgress(15)
-    setProgressMsg('Extrayendo texto del PDF...')
+    setProgress(10)
+    setProgressMsg('Iniciando conversión del PDF...')
 
     try {
-      const markdown = await pdfToMarkdown(file)
+      const markdown = await pdfToMarkdown(file, (msg) => {
+        setProgressMsg(msg)
+        setProgress((p) => Math.min(p + 10, 45))
+      })
 
       setState('analyzing')
       setProgress(50)
-      setProgressMsg('Enviando a Claude para análisis bajo Ley 21.595...')
+      setProgressMsg('Enviando a Groq (Llama 3.3) para análisis bajo Ley 21.595...')
 
       const res = await analizarMemoria(markdown, apiKey, (msg) => {
         setProgressMsg(msg)
-        setProgress(70)
+        setProgress(75)
       })
 
       setResultado(res)

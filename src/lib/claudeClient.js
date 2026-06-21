@@ -40,7 +40,7 @@ Responde ÚNICAMENTE con un objeto JSON válido con esta estructura:
 }
 
 MEMORIA A ANALIZAR:
-${textoMarkdown.slice(0, 24000)}`
+${textoMarkdown.slice(0, 80000)}`
 
   onProgress?.('Enviando a Groq (Llama 3.3) para análisis...')
 

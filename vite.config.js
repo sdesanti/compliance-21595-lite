@@ -9,4 +9,13 @@ export default defineConfig({
   optimizeDeps: {
     include: ['pdfjs-dist', 'react', 'react-dom'],
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 })

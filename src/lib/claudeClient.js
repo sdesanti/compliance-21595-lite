@@ -12,6 +12,17 @@ const DIMENSIONES = [
   { id: 'cultura', nombre: 'Cultura de Compliance', descripcion: 'Capacitación, ética corporativa, compromisos declarados' },
 ]
 
+// Toma el inicio y el final del documento para maximizar cobertura dentro del límite
+function smartTruncate(text, maxChars) {
+  if (text.length <= maxChars) return text
+  const half = Math.floor(maxChars / 2)
+  return (
+    text.slice(0, half) +
+    '\n\n[... sección central omitida por límite de tokens ...]\n\n' +
+    text.slice(text.length - half)
+  )
+}
+
 export async function analizarMemoria(textoMarkdown, apiKey, onProgress) {
   const dimsText = DIMENSIONES.map((d, i) => `${i + 1}. **${d.nombre}**: ${d.descripcion}`).join('\n')
 
@@ -40,7 +51,7 @@ Responde ÚNICAMENTE con un objeto JSON válido con esta estructura:
 }
 
 MEMORIA A ANALIZAR:
-${textoMarkdown.slice(0, 80000)}`
+${smartTruncate(textoMarkdown, 28000)}`
 
   onProgress?.('Enviando a Groq (Llama 3.3) para análisis...')
 
